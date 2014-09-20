@@ -16,6 +16,9 @@
 
 package com.google.android.glass.sample.timer;
 
+import com.example.glasstest.GreetingService;
+import com.example.glasstest.MainActivity;
+import com.example.glasstest.R;
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
@@ -130,7 +133,7 @@ public class SetTimerActivity extends Activity implements BaseListener, ScrollLi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.set_timer, menu);
+        inflater.inflate(R.menu.greeting, menu);
         return true;
     }
 
@@ -143,22 +146,28 @@ public class SetTimerActivity extends Activity implements BaseListener, ScrollLi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mShouldFinish = true;
+        mShouldFinish = true;  // Handle item selection.
         switch (item.getItemId()) {
-            case R.id.start:
-                if (getCallingActivity() == null) {
-                    startTimer();
-                } else {
-                    setTimer(true);
+        case R.id.stop:
+            // Stop the service at the end of the message queue for proper options menu
+            // animation. This is only needed when starting a new Activity or stopping a Service
+            // that published a LiveCard.
+            post(new Runnable() {
+
+                @Override
+                public void run() {
+                    stopService(new Intent(SetTimerActivity.this, TimerService.class));
                 }
-                return true;
-            case R.id.set:
-                setTimer(false);
-                return true;
-            default:
-                mShouldFinish = false;
-                return super.onOptionsItemSelected(item);
-        }
+            });
+            return true;
+            
+        case R.id.left:
+        	
+        	//blink left
+        	return true;
+        default:
+            return super.onOptionsItemSelected(item);
+    }
     }
 
     @Override
